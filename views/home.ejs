@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>user details</title>
+	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+	<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../css/modal.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<div id="registration">
+					<form action="/registration" method="get">
+						<button type="submit" class="btn btn-primary" id="reg-btn">Register</button>
+					</form>
+				</div>
+				<button class="btn btn-primary" id="import-btn" data-toggle="modal" data-target="#import">Import File</button>
+			</div>
+			<div class="col-md-6">
+				<div id="filter" style="text-align: center;">
+					<h4>Filter students using location</h4>
+					<input type="text" name="search" id="search" style="width: 50%;" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="table">
+		<table border="1" id="data_table">
+			<tbody>
+				<tr>
+					<th>Name</th>
+					<th>Age</th>
+					<th>Location</th>
+					<th>Department</th>
+					<th>Edit</th>
+					<th>Delete</th>
+				</tr>
+				<%if (data.length > 0) { %>
+					<% for(var i=0; i < data.length; i++) { %>
+				<tr>
+					<td><%= data[i].name %></td>
+					<td><%= data[i].age %></td>
+					<td><%= data[i].location %></td>
+					<td><%= data[i].department %></td>
+					<td><a href="#" class="edit" data-toggle="modal" data-target="#myModal" id="<%= data[i].user_id %>">Edit</a></td>
+					<td><a href="#" class="delete" data-toggle="modal" data-target="#delete-modal" id="<%= data[i].user_id %>">Delete</a></td>
+				</tr>
+					<% } %>
+				<% } else { %>
+					<tr align="center"><td colspan="6">No records..!!</td></tr>
+				<% } %>
+			</tbody>
+		</table>
+
+		<div class="modal fade" id="myModal" role="dialog">
+		    <div class="modal-dialog">
+			    <div class="modal-content">
+			        <div class="modal-header">
+			          	<button type="button" class="close" data-dismiss="modal">&times;</button>
+			          	<h4 class="modal-title">Update Student Details</h4>
+			        </div>
+			        <div class="modal-body">
+			        	<div id="model-content">
+			        		<form action="/student/update" method="post">
+					        	<input type="hidden" name="user_id" id="user">
+					        	<label for="name"><b>Name</b></label>
+					          	<input type="text" name="name" id="name" required /><br>
+					          	<label for="age"><b>Age</b></label>
+					          	<input type="number" name="age" id="age" required /><br>
+					          	<label for="location"><b>Location</b></label>
+					          	<input type="text" name="location" id="location" required /><br>
+					          	<label for="department"><b>Department</b></label>
+					          	<input type="text" name="department" id="department" required /><br>
+							    <input type="submit" value="Update" class="btn btn-primary">
+							    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+							</form>
+							</div>
+						</div>
+			        </div>
+			        <div class="modal-footer">
+			        </div>
+		      	</div>		      
+		    </div>
+		</div>
+
+		<div class="modal fade deleteModal" id="delete-modal" role="dialog">
+		    <div class="modal-dialog">
+			    <div class="modal-content">
+			        <div class="modal-header">
+			          	<button type="button" class="close" data-dismiss="modal">&times;</button>
+			          	<h4 class="modal-title">Delete Student Details</h4>
+			        </div>
+			        <div class="modal-body">
+			        	<div id="alert-user">
+				        	<input type="hidden" name="delete" id="delete" />
+				        	<p>Are you sure you want to delete !!</p>
+				        </div>
+			        </div>
+			        <div class="modal-footer">
+			        	<button id="delete-user" class="btn btn-primary">Ok</button>
+			          	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			        </div>
+		      	</div>		      
+		    </div>
+		</div>
+	</div>
+
+	<div class="modal fade deleteModal" id="import" role="dialog">
+		    <div class="modal-dialog">
+			    <div class="modal-content">
+			        <div class="modal-header">
+			          	<button type="button" class="close" data-dismiss="modal">&times;</button>
+			          	<h4 class="modal-title">Import your file Here</h4>
+			        </div>
+			        <div class="modal-body">
+			        	<div>
+							<form ref='uploadForm' id='uploadForm' action='/student/upload' method='post' encType="multipart/form-data">
+									<input type="file" name="sampleFile" accept=".csv" />
+									<input type='submit' value='Upload!' />
+							</form>	
+						</div>
+			        </div>
+			        <div class="modal-footer">
+			          	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			        </div>
+		      	</div>		      
+		    </div>
+		</div>
+	</div>
+
+	<style type="text/css">
+		table {
+			background-color: cornsilk;
+			/*margin-left: 10rem;*/
+			width: 100%;
+		}
+		#reg-btn {
+			margin-top: 5rem;
+		}
+		#import-btn {
+			margin-top: -5.5rem;
+			margin-left: 12rem;
+		}
+		table, tbody, tr, td {
+			text-align:center;
+			padding: 10px;
+		}
+
+		table, tbody, tr, th {
+			text-align:center;
+		}
+	</style>
+</body>
+</html>
